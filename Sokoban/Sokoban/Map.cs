@@ -15,7 +15,6 @@ namespace Sokoban
         private Stack<Sprite>[,] sprites;
         int deltaHeight;
         int deltaWidth;
-        readonly int sizeSprite;
         SettingsManager settings;
         Dictionary<SpriteType, Texture2D> dictTexture;
         
@@ -26,7 +25,6 @@ namespace Sokoban
             this.player = player;
             this.dictTexture = dictTexture;
             this.settings = settings;
-            sizeSprite = settings.SizeSprite;
         }
 
         public void CreateMap(int currentLevel)
@@ -41,8 +39,8 @@ namespace Sokoban
                     Height = int.Parse(lineArray[1]);
 
                     sprites = new Stack<Sprite>[Height, Width];
-                    deltaHeight = (settings.Height - Height * sizeSprite) / 2;
-                    deltaWidth = (settings.Width - Width * sizeSprite) / 2;
+                    deltaHeight = (settings.Height - Height * settings.SizeSprite) / 2;
+                    deltaWidth = (settings.Width - Width * settings.SizeSprite) / 2;
                                         
                     CreateLevel(sr, settings.SizeSprite);
                 }
@@ -112,8 +110,8 @@ namespace Sokoban
                 CheckPLaceX(sprites[positinMap.Y, positinMap.X]);
             }
 
-            sprite.position.X = positinMap.X * sizeSprite + deltaWidth;
-            sprite.position.Y = positinMap.Y * sizeSprite + deltaHeight;
+            sprite.position.X = positinMap.X * settings.SizeSprite + deltaWidth;
+            sprite.position.Y = positinMap.Y * settings.SizeSprite + deltaHeight;
 
             if (sprites[positinMap.Y, positinMap.X] == null)
             {
