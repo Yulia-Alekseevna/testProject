@@ -28,7 +28,7 @@ namespace Sokoban
 
         public bool SetSprite(Sprite sprite, Point positinMap)
         {
-            if (sprite.typeSprite == SpriteType.PlacePutBox)
+            if (sprite.typeSprite == SpriteType.PlaceX)
             {
                 CountOpenPlaceX++;
             }
@@ -52,7 +52,7 @@ namespace Sokoban
 
         private void CheckPLaceX(Stack<Sprite> stack)
         {
-            if (stack != null && stack.Count > 0 && stack.Peek().typeSprite == SpriteType.PlacePutBox)
+            if (stack != null && stack.Count > 0 && stack.Peek().typeSprite == SpriteType.PlaceX)
             {
                 CountOpenPlaceX--;
             }
@@ -62,7 +62,7 @@ namespace Sokoban
         {
             var spriteStack = sprites[positionMap.Y, positionMap.X];
             var spriteRemove = spriteStack.Pop();
-            if (spriteRemove.typeSprite == SpriteType.Box && spriteStack.Count > 0 && spriteStack.Peek().typeSprite == SpriteType.PlacePutBox)
+            if (spriteRemove.typeSprite == SpriteType.Box && spriteStack.Count > 0 && spriteStack.Peek().typeSprite == SpriteType.PlaceX)
             {
                 CountOpenPlaceX++;
             }
@@ -99,8 +99,5 @@ namespace Sokoban
 
             return null;
         }
-
-
-        
     }
 }

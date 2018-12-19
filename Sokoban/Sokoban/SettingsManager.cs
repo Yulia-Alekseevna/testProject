@@ -1,5 +1,5 @@
 ﻿using System.Configuration;
-using System.Collections.Specialized;
+using System;
 
 namespace Sokoban
 {
@@ -32,6 +32,11 @@ namespace Sokoban
 
         public bool UpdateCurrentLevel(int newLevel)
         {
+            if (newLevel > CountLevel || newLevel < 1)
+            {
+                throw new ArgumentException(nameof(newLevel));
+            }
+
             try
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);

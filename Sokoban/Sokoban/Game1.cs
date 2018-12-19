@@ -60,7 +60,7 @@ namespace Sokoban
             dictTexture[SpriteType.Player] = Content.Load<Texture2D>("player");
             dictTexture[SpriteType.Box] = Content.Load<Texture2D>("box");
             dictTexture[SpriteType.Wall] = Content.Load<Texture2D>("wall");
-            dictTexture[SpriteType.PlacePutBox] = Content.Load<Texture2D>("plaseX");
+            dictTexture[SpriteType.PlaceX] = Content.Load<Texture2D>("plaseX");
             font = Content.Load<SpriteFont>("MenuFont");
 
             menu.LoadContent(Content);
@@ -118,7 +118,7 @@ namespace Sokoban
                     }
                     else if (c == 'x')
                     {
-                        var sprite = new Sprite(dictTexture[SpriteType.PlacePutBox], new Vector2(x, y), SpriteType.PlacePutBox);
+                        var sprite = new Sprite(dictTexture[SpriteType.PlaceX], new Vector2(x, y), SpriteType.PlaceX);
                         map.SetSprite(sprite, new Point(j, i));
                     }
 

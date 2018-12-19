@@ -11,9 +11,7 @@ namespace Sokoban
         Player,
         Box,
         Wall,
-        PlacePutBox,
+        PlaceX,
         Null
     }
-
-    
 }
