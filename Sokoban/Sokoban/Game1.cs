@@ -40,8 +40,11 @@ namespace Sokoban
             gameState = new GameState(State.Menu, false, settings.CurrentLevel);
             controllerGame = new ControllerGame(gameState, settings, CreateMap);
             menu = new MenuGame(gameState, ExitGame, CreateMap);
+                        
+            var sprite = new Sprite(null,Vector2.Zero, SpriteType.Player);
+            player = new Player(sprite, new Point(0, 0));
 
-            //map = new Map(dictTexture, settings.height, settings.width);
+            map = new Map(settings, dictTexture, player);
 
             base.Initialize();
         }
@@ -68,75 +71,7 @@ namespace Sokoban
 
         private void CreateMap()
         {
-            try
-            {
-                string path = "Levels/level" + gameState.CurrentLevel + ".txt";
-                using (StreamReader sr = new StreamReader(path))
-                {
-                    var lineArray = sr.ReadLine().Split(' ');
-                    int widthMap = int.Parse(lineArray[0]);
-                    int heightMap = int.Parse(lineArray[1]);
-                    
-                    map = new Map(widthMap, heightMap, settings);
-
-                    CreateLevel(sr, settings.SizeSprite);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-            }
-        }
-
-        //private void CreateMap()
-        //{
-        //    map.CreateMap(settings.currentLevel);
-        //}
-
-        private void CreateLevel(StreamReader sr, int sizeSprite)
-        {
-            int i = 0;
-            int j = 0;
-            int x = 0;
-            int y = 0;
-
-            while (!sr.EndOfStream)
-            {
-                var line = sr.ReadLine();
-                foreach (char c in line)
-                {
-                    if (c == 'w')
-                    {
-                        var sprite = new Sprite(dictTexture[SpriteType.Wall], new Vector2(x, y), SpriteType.Wall);
-                        map.SetSprite(sprite, new Point(j, i));
-                    }
-                    else if (c == 'b')
-                    {
-                        var sprite = new Sprite(dictTexture[SpriteType.Box], new Vector2(x, y), SpriteType.Box);
-                        map.SetSprite(sprite, new Point(j, i));
-                    }
-                    else if (c == 'x')
-                    {
-                        var sprite = new Sprite(dictTexture[SpriteType.PlaceX], new Vector2(x, y), SpriteType.PlaceX);
-                        map.SetSprite(sprite, new Point(j, i));
-                    }
-
-                    else if (c == 'p')
-                    {
-                        var sprite = new Sprite(dictTexture[SpriteType.Player], new Vector2(x, y), SpriteType.Player);
-                        map.SetSprite(sprite, new Point(j, i));
-                        player = new Player(sprite, new Point(j, i));
-                    }
-
-                    j++;
-                    x += sizeSprite;
-                }
-                i++;
-                j = 0;
-                x = 0;
-                y += sizeSprite;
-            }
+            map.CreateMap(gameState.CurrentLevel);
         }
 
         protected override void UnloadContent()

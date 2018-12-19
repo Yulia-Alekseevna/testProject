@@ -1,29 +1,103 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Sokoban
 {
     class Map
-    {
-        private Stack<Sprite>[,] sprites;
+    {       
         public int CountOpenPlaceX { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        readonly int deltaHeight;
-        readonly int deltaWidth;
+        private Stack<Sprite>[,] sprites;
+        int deltaHeight;
+        int deltaWidth;
         readonly int sizeSprite;
+        SettingsManager settings;
+        Dictionary<SpriteType, Texture2D> dictTexture;
         
-        public Map(int widthMap, int heightMap, SettingsManager settings)
+        Player player;
+
+        public Map(SettingsManager settings, Dictionary<SpriteType, Texture2D> dictTexture, Player player)
         {
-            sprites = new Stack<Sprite>[heightMap,widthMap];
+            this.player = player;
+            this.dictTexture = dictTexture;
+            this.settings = settings;
             sizeSprite = settings.SizeSprite;
-            deltaHeight = (settings.Height - heightMap * sizeSprite) / 2;
-            deltaWidth = (settings.Width - widthMap * sizeSprite) / 2;
-            
-            Height = heightMap;
-            Width = widthMap;
+        }
+
+        public void CreateMap(int currentLevel)
+        {
+            try
+            {
+                string path = "Levels/level" + currentLevel + ".txt";
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    var lineArray = sr.ReadLine().Split(' ');
+                    Width = int.Parse(lineArray[0]);
+                    Height = int.Parse(lineArray[1]);
+
+                    sprites = new Stack<Sprite>[Height, Width];
+                    deltaHeight = (settings.Height - Height * sizeSprite) / 2;
+                    deltaWidth = (settings.Width - Width * sizeSprite) / 2;
+                                        
+                    CreateLevel(sr, settings.SizeSprite);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private void CreateLevel(StreamReader sr, int sizeSprite)
+        {
+            int i = 0;
+            int j = 0;
+            int x = 0;
+            int y = 0;
+
+            while (!sr.EndOfStream)
+            {
+                var line = sr.ReadLine();
+                foreach (char c in line)
+                {
+                    if (c == 'w')
+                    {
+                        var sprite = new Sprite(dictTexture[SpriteType.Wall], new Vector2(x, y), SpriteType.Wall);
+                        SetSprite(sprite, new Point(j, i));
+                    }
+                    else if (c == 'b')
+                    {
+                        var sprite = new Sprite(dictTexture[SpriteType.Box], new Vector2(x, y), SpriteType.Box);
+                        SetSprite(sprite, new Point(j, i));
+                    }
+                    else if (c == 'x')
+                    {
+                        var sprite = new Sprite(dictTexture[SpriteType.PlaceX], new Vector2(x, y), SpriteType.PlaceX);
+                        SetSprite(sprite, new Point(j, i));
+                    }
+
+                    else if (c == 'p')
+                    {
+                        var sprite = new Sprite(dictTexture[SpriteType.Player], new Vector2(x, y), SpriteType.Player);
+                        player.PositionMap = new Point(j, i);
+                        player.Sprite = sprite;
+                        SetSprite(player.Sprite, player.PositionMap);
+                    }
+
+                    j++;
+                    x += sizeSprite;
+                }
+                i++;
+                j = 0;
+                x = 0;
+                y += sizeSprite;
+            }
         }
 
         public bool SetSprite(Sprite sprite, Point positinMap)
